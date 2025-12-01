@@ -9,7 +9,7 @@ import {
   getCollaboratorById,
 } from "./dataStore.firebase.js";
 
-const ADMIN_PASSWORD = "shir7admin";
+const ADMIN_PASSWORD = "123456";
 
 /**
  * Verifica se a senha do admin está correta

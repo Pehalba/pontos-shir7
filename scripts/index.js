@@ -32,7 +32,7 @@ import {
     calculateMonthPoints as calculateMonthPointsDataStore,
     getChecklistTasks,
     getTasksByCategory
-} from './dataStore.js';
+} from './dataStore.firebase.js';
 
 import { requireAuth, getCurrentUser } from './auth.js';
 
@@ -629,12 +629,12 @@ function handleDeletePersonalBoard(boardId) {
 /**
  * Atualiza o display de pontos
  */
-function updatePointsDisplay() {
+async function updatePointsDisplay() {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
     
-    // Usa dataStore para calcular pontos do colaborador atual
-    const monthTotal = calculateMonthPointsDataStore(currentUser.id);
+    // Usa dataStore (Firebase) para calcular pontos do colaborador atual
+    const monthTotal = await calculateMonthPointsDataStore(currentUser.id);
     
     // Para hoje, ainda usa o sistema antigo temporariamente (compatibilidade)
     const todayTotal = calculateTodayPointsWithDeductions();

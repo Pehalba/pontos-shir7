@@ -1,5 +1,5 @@
 /**
- * Página de Detalhes do Colaborador - Admin
+ * Página de Detalhes do Colaborador - Admin (Firebase)
  */
 
 import {
@@ -11,14 +11,14 @@ import {
     calculateCollaboratorBalance,
     calculateMonthPoints,
     countMonthlyRedemptions
-} from './dataStore.js';
+} from './dataStore.firebase.js';
 
 let currentCollaboratorId = null;
 
 /**
  * Inicializa a página
  */
-function init() {
+async function init() {
     // Obtém ID do colaborador da URL
     const urlParams = new URLSearchParams(window.location.search);
     currentCollaboratorId = urlParams.get('id');
@@ -28,15 +28,15 @@ function init() {
         return;
     }
     
-    loadCollaboratorData();
+    await loadCollaboratorData();
     setupEventListeners();
 }
 
 /**
  * Carrega dados do colaborador
  */
-function loadCollaboratorData() {
-    const collaborator = getCollaboratorById(currentCollaboratorId);
+async function loadCollaboratorData() {
+    const collaborator = await getCollaboratorById(currentCollaboratorId);
     
     if (!collaborator) {
         window.location.href = 'admin.html';
@@ -47,9 +47,11 @@ function loadCollaboratorData() {
     document.getElementById('collaboratorName').textContent = collaborator.name;
     
     // Calcula estatísticas
-    const balance = calculateCollaboratorBalance(currentCollaboratorId);
-    const monthPoints = calculateMonthPoints(currentCollaboratorId);
-    const monthlyRedemptions = countMonthlyRedemptions(currentCollaboratorId);
+    const [balance, monthPoints, monthlyRedemptions] = await Promise.all([
+        calculateCollaboratorBalance(currentCollaboratorId),
+        calculateMonthPoints(currentCollaboratorId),
+        countMonthlyRedemptions(currentCollaboratorId)
+    ]);
     
     // Atualiza resumo
     document.getElementById('currentBalance').textContent = balance;
@@ -64,13 +66,15 @@ function loadCollaboratorData() {
 /**
  * Renderiza o histórico do colaborador
  */
-function renderHistory() {
+async function renderHistory() {
     const container = document.getElementById('historyContainer');
     if (!container) return;
     
-    const activities = getActivitiesByCollaborator(currentCollaboratorId);
-    const redemptions = getRedemptionsByCollaborator(currentCollaboratorId);
-    const adjustments = getAdjustmentsByCollaborator(currentCollaboratorId);
+    const [activities, redemptions, adjustments] = await Promise.all([
+        getActivitiesByCollaborator(currentCollaboratorId),
+        getRedemptionsByCollaborator(currentCollaboratorId),
+        getAdjustmentsByCollaborator(currentCollaboratorId)
+    ]);
     
     // Combina todos os registros
     const allEntries = [
@@ -159,7 +163,7 @@ function setupEventListeners() {
 /**
  * Manipula o ajuste de pontos
  */
-function handleAdjustment(e) {
+async function handleAdjustment(e) {
     e.preventDefault();
     
     const type = document.getElementById('adjustmentType').value;
@@ -192,7 +196,7 @@ function handleAdjustment(e) {
     }
     
     // Cria o ajuste
-    addAdjustment({
+    await addAdjustment({
         collaboratorId: currentCollaboratorId,
         type: type,
         points: points,
@@ -203,7 +207,7 @@ function handleAdjustment(e) {
     form.reset();
     
     // Recarrega dados
-    loadCollaboratorData();
+    await loadCollaboratorData();
     
     // Mensagem de sucesso
     alert('Ajuste aplicado com sucesso!');
@@ -211,7 +215,9 @@ function handleAdjustment(e) {
 
 // Inicializa quando o DOM estiver pronto
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+    });
 } else {
     init();
 }

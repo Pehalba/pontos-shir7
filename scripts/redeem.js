@@ -17,7 +17,7 @@ import {
     calculateMonthPoints as calculateMonthPointsDataStore,
     countMonthlyRedemptions as countMonthlyRedemptionsDataStore,
     setCurrentCollaborator
-} from './dataStore.js';
+} from './dataStore.firebase.js';
 
 import { requireAuth, getCurrentUser } from './auth.js';
 
@@ -172,12 +172,12 @@ function setupEventListeners() {
 /**
  * Atualiza o display com informações atuais
  */
-function updateDisplay() {
+async function updateDisplay() {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
     
     // Usa dataStore para calcular pontos do colaborador atual
-    const availablePoints = calculateCollaboratorBalance(currentUser.id);
+    const availablePoints = await calculateCollaboratorBalance(currentUser.id);
     
     // Atualiza pontos disponíveis
     document.getElementById('availablePoints').textContent = availablePoints;
@@ -230,13 +230,13 @@ function updateDisplay() {
 /**
  * Manipula o resgate
  */
-function handleRedeem() {
+async function handleRedeem() {
     const currentUser = getCurrentUser();
     if (!currentUser || !selectedProduct) {
         return;
     }
     
-    const availablePoints = calculateCollaboratorBalance(currentUser.id);
+    const availablePoints = await calculateCollaboratorBalance(currentUser.id);
     const totalCost = selectedProduct.points + (personalization ? PERSONALIZATION_POINTS : 0);
     const shirtNameInput = document.getElementById('shirtNameInput');
     const nameInput = document.getElementById('nameInput');
@@ -263,7 +263,7 @@ function handleRedeem() {
     }
     
     // Cria o resgate usando dataStore
-    addRedemption({
+    await addRedemption({
         collaboratorId: currentUser.id,
         product: selectedProduct.name,
         shirtName: shirtName,
@@ -317,12 +317,12 @@ function showMessage(text, type) {
 /**
  * Renderiza o histórico de resgates
  */
-function renderHistory() {
+async function renderHistory() {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
     
     const container = document.getElementById('historyContainer');
-    const redemptions = getRedemptionsByCollaborator(currentUser.id);
+    const redemptions = await getRedemptionsByCollaborator(currentUser.id);
     
     // Ordena por data (mais recente primeiro)
     const sortedRedemptions = redemptions.sort((a, b) => {

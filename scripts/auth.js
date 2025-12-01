@@ -1,17 +1,28 @@
 /**
- * Verificação de autenticação
+ * Verificação de autenticação (usa dados salvos no localStorage)
  */
 
-import {
-    getCurrentCollaborator
-} from './dataStore.js';
+const CURRENT_USER_KEY = 'shir7_current_user';
+
+function readCurrentUser() {
+    const raw = localStorage.getItem(CURRENT_USER_KEY);
+    if (!raw) return null;
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+}
 
 /**
  * Verifica se há um colaborador logado
  */
 export function isAuthenticated() {
-    const current = getCurrentCollaborator();
-    return current !== null && current.active === true;
+    const current = readCurrentUser();
+    if (!current) return false;
+    // Se o campo active não existir, considera como ativo (compatibilidade)
+    if (typeof current.active === 'undefined') return true;
+    return current.active === true;
 }
 
 /**
@@ -29,9 +40,10 @@ export function requireAuth() {
  * Obtém o colaborador atual
  */
 export function getCurrentUser() {
-    return getCurrentCollaborator();
+    return readCurrentUser();
 }
 
-
-
+export function clearCurrentUser() {
+    localStorage.removeItem(CURRENT_USER_KEY);
+}
 

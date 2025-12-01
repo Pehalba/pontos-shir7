@@ -3,7 +3,8 @@
  */
 
 import { showAdminAuthModal } from './adminAuth.js';
-import { setCurrentCollaborator } from './dataStore.js';
+import { setCurrentCollaborator } from './dataStore.firebase.js';
+import { clearCurrentUser } from './auth.js';
 
 export function setupHeaderButtons() {
     const adminBtn = document.getElementById('adminAccessBtn');
@@ -15,6 +16,7 @@ export function setupHeaderButtons() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             setCurrentCollaborator(null);
+            clearCurrentUser();
             window.location.href = 'login.html';
         });
     }

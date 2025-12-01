@@ -60,7 +60,7 @@ async function renderCollaboratorsList() {
             `;
             
             item.addEventListener('click', () => {
-                loginAsCollaborator(collab.id);
+                loginAsCollaborator(collab);
             });
             
             container.appendChild(item);
@@ -74,8 +74,10 @@ async function renderCollaboratorsList() {
 /**
  * Faz login como colaborador
  */
-function loginAsCollaborator(collaboratorId) {
-    setCurrentCollaborator(collaboratorId);
+function loginAsCollaborator(collaborator) {
+    setCurrentCollaborator(collaborator.id);
+    // Salva dados básicos do colaborador para autenticação e header
+    localStorage.setItem('shir7_current_user', JSON.stringify(collaborator));
     window.location.href = 'index.html';
 }
 

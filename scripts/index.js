@@ -483,7 +483,7 @@ function renderTaskColumn(containerId, tasks, type) {
 /**
  * Move uma tarefa extra para cima ou para baixo
  */
-function moveTask(type, currentIndex, direction, originalTasks) {
+async function moveTask(type, currentIndex, direction, originalTasks) {
     const orderedTasks = getOrderedTasks(originalTasks, type);
     const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     
@@ -502,7 +502,7 @@ function moveTask(type, currentIndex, direction, originalTasks) {
 /**
  * Manipula o toggle de uma tarefa extra
  */
-function handleTaskToggle(taskId, type, points, isCompleting) {
+async function handleTaskToggle(taskId, type, points, isCompleting) {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
     

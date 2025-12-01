@@ -26,11 +26,11 @@ let editingTask = null;
 /**
  * Inicializa a página
  */
-function init() {
+async function init() {
     console.log('🚀 AdminTarefas: Inicializando...');
     setupTabs();
     setupEventListeners();
-    loadTasks();
+    await loadTasks();
     console.log('✅ AdminTarefas: Inicializado');
 }
 
@@ -380,10 +380,19 @@ function getDefaultPoints(category) {
 }
 
 // Inicializa quando o DOM estiver pronto
+async function start() {
+    console.log('🔵 Iniciando adminTarefas...');
+    try {
+        await init();
+    } catch (error) {
+        console.error('❌ Erro na inicialização:', error);
+    }
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', start);
 } else {
-    init();
+    start();
 }
 
 

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Tarefas - Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/admin.css">
+    <link rel="stylesheet" href="blocks/tasks-admin.css">
+    <link rel="stylesheet" href="pages/admin.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Sistema de Pontos SHIR7</h1>
+            <nav class="header__nav">
+                <a href="admin.html" class="header__nav-link">← Voltar ao Painel</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin">
+        <div class="admin__container">
+            <div class="admin__section">
+                <div class="admin__section-header">
+                    <h2 class="admin__section-title">Gerenciar Tarefas</h2>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tasks-admin__tabs">
+                    <button class="tasks-admin__tab tasks-admin__tab--active" data-tab="checklist">
+                        Checklist Diário
+                    </button>
+                    <button class="tasks-admin__tab" data-tab="easy">
+                        Tarefas Fáceis (+1 ponto)
+                    </button>
+                    <button class="tasks-admin__tab" data-tab="intermediate">
+                        Tarefas Moderadas (+2 pontos)
+                    </button>
+                    <button class="tasks-admin__tab" data-tab="hard">
+                        Tarefas Difíceis (+3 pontos)
+                    </button>
+                </div>
+
+                <!-- Checklist Diário -->
+                <div class="tasks-admin__panel" id="panel-checklist">
+                    <div class="tasks-admin__header">
+                        <h3>Checklist Diário</h3>
+                        <button class="btn btn--primary" id="addChecklistBtn">+ Adicionar Tarefa</button>
+                    </div>
+                    <div class="tasks-admin__list" id="checklistList"></div>
+                </div>
+
+                <!-- Tarefas Fáceis -->
+                <div class="tasks-admin__panel tasks-admin__panel--hidden" id="panel-easy">
+                    <div class="tasks-admin__header">
+                        <h3>Tarefas Fáceis (+1 ponto cada)</h3>
+                        <button class="btn btn--primary" id="addEasyBtn">+ Adicionar Tarefa</button>
+                    </div>
+                    <div class="tasks-admin__list" id="easyList"></div>
+                </div>
+
+                <!-- Tarefas Moderadas -->
+                <div class="tasks-admin__panel tasks-admin__panel--hidden" id="panel-intermediate">
+                    <div class="tasks-admin__header">
+                        <h3>Tarefas Moderadas (+2 pontos cada)</h3>
+                        <button class="btn btn--primary" id="addIntermediateBtn">+ Adicionar Tarefa</button>
+                    </div>
+                    <div class="tasks-admin__list" id="intermediateList"></div>
+                </div>
+
+                <!-- Tarefas Difíceis -->
+                <div class="tasks-admin__panel tasks-admin__panel--hidden" id="panel-hard">
+                    <div class="tasks-admin__header">
+                        <h3>Tarefas Difíceis (+3 pontos cada)</h3>
+                        <button class="btn btn--primary" id="addHardBtn">+ Adicionar Tarefa</button>
+                    </div>
+                    <div class="tasks-admin__list" id="hardList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para adicionar/editar tarefa -->
+    <div class="modal" id="taskModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" id="modalTitle">Adicionar Tarefa</h3>
+                <button class="modal__close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    <input type="hidden" id="taskCategory">
+                    
+                    <div class="form-group">
+                        <label for="taskTitle" class="form-label">Título da Tarefa:</label>
+                        <input 
+                            type="text" 
+                            id="taskTitle" 
+                            class="form-input" 
+                            placeholder="Ex: Organizar estoque"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group" id="pointsGroup" style="display: none;">
+                        <label for="taskPoints" class="form-label">Pontos:</label>
+                        <input 
+                            type="number" 
+                            id="taskPoints" 
+                            class="form-input" 
+                            min="1"
+                            value="1"
+                        >
+                    </div>
+
+                    <div class="modal__actions">
+                        <button type="button" class="btn btn--secondary" id="cancelBtn">Cancelar</button>
+                        <button type="submit" class="btn btn--primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/adminTarefas.js"></script>
+</body>
+</html>
+
+
+

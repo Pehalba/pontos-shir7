@@ -1,0 +1,142 @@
+.login {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login__container {
+    width: 100%;
+    max-width: 500px;
+}
+
+.login__card {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.login__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    text-align: center;
+}
+
+.login__subtitle {
+    margin: 0 0 2rem 0;
+    color: #6c757d;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.login__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.login__item {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.login__item:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login__item--inactive {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login__item--inactive:hover {
+    transform: none;
+    border-color: #dee2e6;
+}
+
+.login__item-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.login__item-status {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.login__item-status--active {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.login__item-status--inactive {
+    color: #dc3545;
+}
+
+.login__divider {
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.login__divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: #dee2e6;
+}
+
+.login__divider span {
+    background: white;
+    padding: 0 1rem;
+    color: #6c757d;
+    position: relative;
+}
+
+.login__admin-btn {
+    width: 100%;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.login__admin-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.login__empty {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+    font-style: italic;
+}
+
+
+
+

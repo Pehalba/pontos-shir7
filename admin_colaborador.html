@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Colaborador - Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/admin.css">
+    <link rel="stylesheet" href="pages/admin.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Detalhes do Colaborador</h1>
+            <nav class="header__nav">
+                <a href="admin.html" class="header__nav-link">← Voltar</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin">
+        <div class="admin__container">
+            <!-- Resumo do Colaborador -->
+            <section class="admin__section">
+                <h2 class="admin__section-title" id="collaboratorName">Colaborador</h2>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-card__label">Pontos Atuais (Saldo)</div>
+                        <div class="summary-card__value" id="currentBalance">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card__label">Pontos Ganhos no Mês</div>
+                        <div class="summary-card__value" id="monthPoints">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card__label">Camisas Resgatadas (Mês)</div>
+                        <div class="summary-card__value" id="monthlyRedemptions">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card__label">Camisas Disponíveis</div>
+                        <div class="summary-card__value" id="remainingRedemptions">3</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ajustes Manuais -->
+            <section class="admin__section">
+                <h2 class="admin__section-title">Ajustes Manuais de Pontos</h2>
+                <form id="adjustmentForm" class="adjustment-form">
+                    <div class="form-group">
+                        <label for="adjustmentType" class="form-label">Tipo de ajuste:</label>
+                        <select id="adjustmentType" class="form-select" required>
+                            <option value="">-- Selecione --</option>
+                            <option value="bonus">Bônus</option>
+                            <option value="desconto">Desconto</option>
+                            <option value="correcao">Correção</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentPoints" class="form-label">Quantidade de pontos:</label>
+                        <input 
+                            type="number" 
+                            id="adjustmentPoints" 
+                            class="form-input" 
+                            placeholder="Ex: 5 ou -3"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentReason" class="form-label">Motivo / Observação:</label>
+                        <textarea 
+                            id="adjustmentReason" 
+                            class="form-textarea" 
+                            placeholder="Descreva o motivo do ajuste..."
+                            required
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Aplicar Ajuste</button>
+                </form>
+            </section>
+
+            <!-- Histórico -->
+            <section class="admin__section">
+                <h2 class="admin__section-title">Histórico</h2>
+                <div id="historyContainer" class="history-container"></div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/adminColaborador.js"></script>
+</body>
+</html>
+
+
+
+

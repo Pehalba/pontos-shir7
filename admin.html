@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Gestor - Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/admin.css">
+    <link rel="stylesheet" href="pages/admin.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Painel do Gestor</h1>
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link">Área do Colaborador</a>
+                <a href="admin.html" class="header__nav-link header__nav-link--active">Painel do Gestor</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin">
+        <div class="admin__container">
+            <section class="admin__section">
+                <div class="admin__section-header">
+                    <h2 class="admin__section-title">Colaboradores</h2>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="admin_tarefas.html" class="btn btn--secondary">⚙️ Gerenciar Tarefas</a>
+                        <button id="addCollaboratorBtn" class="btn btn--primary">+ Adicionar Colaborador</button>
+                    </div>
+                </div>
+                <div id="collaboratorsList" class="collaborators-list"></div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/admin.js"></script>
+</body>
+</html>
+
+

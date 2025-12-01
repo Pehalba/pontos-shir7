@@ -1,0 +1,54 @@
+.points-summary {
+    background: #f8f9fa;
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+}
+
+.points-summary__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.points-summary__label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.points-summary__value {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #667eea;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.points-summary__breakdown {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .points-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .points-summary__breakdown {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+
+
+

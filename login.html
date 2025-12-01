@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/login.css">
+    <link rel="stylesheet" href="pages/login.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Sistema de Pontos SHIR7</h1>
+        </div>
+    </header>
+
+    <main class="login">
+        <div class="login__container">
+            <div class="login__card">
+                <h2 class="login__title">Acessar Sistema</h2>
+                <p class="login__subtitle">Selecione seu perfil para continuar</p>
+                
+                <div id="collaboratorsList" class="login__list"></div>
+                
+                <div class="login__divider">
+                    <span>ou</span>
+                </div>
+                
+                <button id="adminAccessBtn" class="login__admin-btn">
+                    ⚙️ Acessar como Gestor
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/login.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/board.css">
+    <link rel="stylesheet" href="blocks/card.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/points-summary.css">
+    <link rel="stylesheet" href="blocks/personal-board.css">
+    <link rel="stylesheet" href="pages/index.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Sistema de Pontos SHIR7</h1>
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link header__nav-link--active">Pontos</a>
+                <a href="redeem.html" class="header__nav-link">Resgate</a>
+                <button id="logoutBtn" class="header__admin-btn" title="Sair">🚪</button>
+                <button id="adminAccessBtn" class="header__admin-btn" title="Área do Gestor">⚙️</button>
+            </nav>
+        </div>
+        <p class="header__greeting">Olá, <span class="header__name" id="collaboratorName">Colaborador</span></p>
+    </header>
+
+    <div class="points-summary" id="pointsSummary">
+        <div class="points-summary__item">
+            <span class="points-summary__label">Pontos totais no mês:</span>
+            <span class="points-summary__value" id="totalMonthPoints">0</span>
+        </div>
+        <div class="points-summary__item">
+            <span class="points-summary__label">Pontos de hoje:</span>
+            <span class="points-summary__value" id="todayPoints">0</span>
+        </div>
+        <div class="points-summary__breakdown">
+            <div class="points-summary__item">
+                <span class="points-summary__label">Checklist diário:</span>
+                <span class="points-summary__value" id="checklistPoints">0</span>
+            </div>
+            <div class="points-summary__item">
+                <span class="points-summary__label">Tarefas fáceis:</span>
+                <span class="points-summary__value" id="easyPoints">0</span>
+            </div>
+            <div class="points-summary__item">
+                <span class="points-summary__label">Tarefas intermediárias:</span>
+                <span class="points-summary__value" id="intermediatePoints">0</span>
+            </div>
+            <div class="points-summary__item">
+                <span class="points-summary__label">Tarefas difíceis:</span>
+                <span class="points-summary__value" id="hardPoints">0</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="board" id="mainBoard">
+        <!-- Checklist Diário -->
+        <section class="board__column board__column--checklist">
+            <h2 class="board__title">Checklist Diário</h2>
+            <div class="board__cards" id="checklistColumn"></div>
+            <div class="board__redeem" id="checklistRedeemContainer"></div>
+        </section>
+
+        <!-- Tarefas Fáceis -->
+        <section class="board__column board__column--easy">
+            <h2 class="board__title">Tarefas Fáceis (+1 ponto)</h2>
+            <div class="board__cards" id="easyColumn"></div>
+        </section>
+
+        <!-- Tarefas Intermediárias -->
+        <section class="board__column board__column--intermediate">
+            <h2 class="board__title">Tarefas Intermediárias (+2 pontos)</h2>
+            <div class="board__cards" id="intermediateColumn"></div>
+        </section>
+
+        <!-- Tarefas Difíceis -->
+        <section class="board__column board__column--hard">
+            <h2 class="board__title">Tarefas Difíceis (+3 pontos)</h2>
+            <div class="board__cards" id="hardColumn"></div>
+        </section>
+    </main>
+
+    <!-- Quadros Pessoais -->
+    <section class="personal-boards">
+        <div class="personal-boards__header">
+            <h2 class="personal-boards__title">Quadros Pessoais</h2>
+            <button class="personal-boards__create-btn" id="createPersonalBoardBtn">Criar novo quadro pessoal</button>
+        </div>
+        <div class="personal-boards__container" id="personalBoardsContainer"></div>
+    </section>
+
+    <script type="module" src="scripts/index.js"></script>
+    <script type="module">
+        import { showAdminAuthModal } from './scripts/adminAuth.js';
+        const adminBtn = document.getElementById('adminAccessBtn');
+        if (adminBtn) {
+            adminBtn.addEventListener('click', showAdminAuthModal);
+        }
+    </script>
+</body>
+</html>
+

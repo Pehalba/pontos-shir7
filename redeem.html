@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resgate de Camisas - Sistema de Pontos SHIR7</title>
+    <link rel="stylesheet" href="vendor/normalize.css">
+    <link rel="stylesheet" href="blocks/header.css">
+    <link rel="stylesheet" href="blocks/redeem.css">
+    <link rel="stylesheet" href="pages/redeem.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">Sistema de Pontos SHIR7</h1>
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link">Pontos</a>
+                <a href="redeem.html" class="header__nav-link header__nav-link--active">Resgate</a>
+                <button id="logoutBtn" class="header__admin-btn" title="Sair">🚪</button>
+            </nav>
+        </div>
+        <p class="header__greeting">Olá, <span class="header__name" id="collaboratorName">Colaborador</span></p>
+    </header>
+
+    <main class="redeem">
+        <div class="redeem__container">
+            <section class="redeem__info">
+                <h2 class="redeem__title">Resgate de Camisas</h2>
+                <div class="redeem__points-display">
+                    <span class="redeem__points-label">Seus pontos disponíveis:</span>
+                    <span class="redeem__points-value" id="availablePoints">0</span>
+                </div>
+                <div class="redeem__rules">
+                    <p class="redeem__rules-text">
+                        <strong>Regras importantes:</strong>
+                    </p>
+                    <ul class="redeem__rules-list">
+                        <li>Os pontos são acumulados mês a mês</li>
+                        <li>Ao resgatar, os pontos são descontados imediatamente</li>
+                        <li>Personalização adiciona +3 pontos ao valor da camisa</li>
+                        <li>Informe o nome e tamanho ao resgatar</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="redeem__products">
+                <h3 class="redeem__section-title">Produtos Disponíveis</h3>
+                <div class="products-grid" id="productsGrid"></div>
+            </section>
+
+            <section class="redeem__selection">
+                <h3 class="redeem__section-title">Seu Resgate</h3>
+                <div class="selection-card">
+                    <div class="selection-card__field">
+                        <label for="productSelect" class="selection-card__label">Selecione a camisa:</label>
+                        <select id="productSelect" class="selection-card__select">
+                            <option value="">-- Selecione uma camisa --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="selection-card__field">
+                        <label for="shirtNameInput" class="selection-card__label">Nome da camisa:</label>
+                        <input 
+                            type="text" 
+                            id="shirtNameInput" 
+                            class="selection-card__input" 
+                            placeholder="Ex: Real Madrid Home 25/26"
+                        >
+                    </div>
+
+                    <div class="selection-card__field">
+                        <label class="selection-card__checkbox-label">
+                            <input type="checkbox" id="personalizationCheck" class="selection-card__checkbox">
+                            <span>Adicionar personalização (+3 pontos)</span>
+                        </label>
+                    </div>
+
+                    <div class="selection-card__field">
+                        <label for="nameInput" class="selection-card__label">Nome para personalização:</label>
+                        <input 
+                            type="text" 
+                            id="nameInput" 
+                            class="selection-card__input" 
+                            placeholder="Digite o nome (opcional)"
+                        >
+                    </div>
+
+                    <div class="selection-card__field">
+                        <label for="sizeSelect" class="selection-card__label">Tamanho da camisa:</label>
+                        <select id="sizeSelect" class="selection-card__select">
+                            <option value="">-- Selecione o tamanho --</option>
+                            <option value="PP">PP</option>
+                            <option value="P">P</option>
+                            <option value="M">M</option>
+                            <option value="G">G</option>
+                            <option value="GG">GG</option>
+                            <option value="XG">XG</option>
+                        </select>
+                    </div>
+
+                    <div class="selection-card__summary">
+                        <div class="selection-card__summary-item">
+                            <span class="selection-card__summary-label">Custo total deste resgate:</span>
+                            <span class="selection-card__summary-value" id="totalCost">0</span>
+                            <span class="selection-card__summary-unit">pontos</span>
+                        </div>
+                        <div class="selection-card__summary-item">
+                            <span class="selection-card__summary-label">Seus pontos disponíveis:</span>
+                            <span class="selection-card__summary-value" id="availablePointsSummary">0</span>
+                            <span class="selection-card__summary-unit">pontos</span>
+                        </div>
+                    </div>
+
+                    <div class="selection-card__actions">
+                        <button id="confirmRedeemBtn" class="selection-card__btn selection-card__btn--primary" disabled>
+                            Confirmar Resgate
+                        </button>
+                    </div>
+
+                    <div id="redeemMessage" class="selection-card__message"></div>
+                </div>
+            </section>
+
+            <section class="redeem__history">
+                <h3 class="redeem__section-title">Histórico de Resgates</h3>
+                <div class="history-container" id="historyContainer">
+                    <p class="history-empty">Nenhum resgate realizado ainda.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/redeem.js"></script>
+</body>
+</html>
+

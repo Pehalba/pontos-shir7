@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+    .login__card {
+        padding: 2rem 1.5rem;
+    }
+
+    .login__title {
+        font-size: 1.5rem;
+    }
+}
+
+
+
+

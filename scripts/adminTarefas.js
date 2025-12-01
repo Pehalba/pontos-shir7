@@ -6,19 +6,19 @@
 
 console.log('📄 Script adminTarefas.js carregado!');
 
-let addTaskConfig, updateTaskConfig, deleteTaskConfig, getTasksConfigByType;
+import {
+  addTaskConfig,
+  updateTaskConfig,
+  deleteTaskConfig,
+  getTasksConfigByType,
+} from './dataStore.firebase.js';
 
-try {
-  const module = await import('./dataStore.firebase.js');
-  addTaskConfig = module.addTaskConfig;
-  updateTaskConfig = module.updateTaskConfig;
-  deleteTaskConfig = module.deleteTaskConfig;
-  getTasksConfigByType = module.getTasksConfigByType;
-  console.log('✅ Imports carregados:', { addTaskConfig, updateTaskConfig, deleteTaskConfig, getTasksConfigByType });
-} catch (error) {
-  console.error('❌ ERRO ao importar dataStore.firebase.js:', error);
-  alert('Erro ao carregar módulos. Veja o console para detalhes.');
-}
+console.log('✅ Imports carregados:', { 
+  addTaskConfig: typeof addTaskConfig, 
+  updateTaskConfig: typeof updateTaskConfig, 
+  deleteTaskConfig: typeof deleteTaskConfig, 
+  getTasksConfigByType: typeof getTasksConfigByType 
+});
 
 let currentTab = 'checklist';
 let editingTask = null;

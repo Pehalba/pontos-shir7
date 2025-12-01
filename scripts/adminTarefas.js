@@ -18,9 +18,11 @@ let editingTask = null;
  * Inicializa a página
  */
 function init() {
+    console.log('🚀 AdminTarefas: Inicializando...');
     setupTabs();
     setupEventListeners();
     loadTasks();
+    console.log('✅ AdminTarefas: Inicializado');
 }
 
 /**
@@ -87,10 +89,20 @@ function setupEventListeners() {
     // Modal
     document.getElementById('closeModal').addEventListener('click', hideTaskModal);
     document.getElementById('cancelBtn').addEventListener('click', hideTaskModal);
-    document.getElementById('taskForm').addEventListener('submit', handleSaveTask);
+    
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+        console.log('✅ Form encontrado, registrando evento submit');
+        taskForm.addEventListener('submit', handleSaveTask);
+    } else {
+        console.error('❌ Form taskForm não encontrado!');
+    }
     
     // Fechar modal ao clicar no overlay
-    document.querySelector('.modal__overlay').addEventListener('click', hideTaskModal);
+    const overlay = document.querySelector('.modal__overlay');
+    if (overlay) {
+        overlay.addEventListener('click', hideTaskModal);
+    }
 }
 
 /**

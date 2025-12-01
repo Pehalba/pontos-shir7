@@ -287,31 +287,44 @@ function hideTaskModal() {
 async function handleSaveTask(e) {
     e.preventDefault();
     
+    console.log('🔵 handleSaveTask chamado');
+    
     const category = document.getElementById('taskCategory').value;
     const taskId = document.getElementById('taskId').value;
     const title = document.getElementById('taskTitle').value.trim();
     const points = parseInt(document.getElementById('taskPoints').value) || 1;
+    
+    console.log('📝 Dados:', { category, taskId, title, points });
     
     if (!title) {
         alert('Por favor, preencha o título da tarefa.');
         return;
     }
     
-    if (taskId) {
-        const updates = category === 'checklist'
-            ? { title }
-            : { title, points };
-        await updateTaskConfig(taskId, updates);
-    } else {
-        await addTaskConfig({
-            type: category,
-            title,
-            points: category === 'checklist' ? null : points
-        });
+    try {
+        if (taskId) {
+            console.log('✏️ Editando tarefa:', taskId);
+            const updates = category === 'checklist'
+                ? { title }
+                : { title, points };
+            await updateTaskConfig(taskId, updates);
+            console.log('✅ Tarefa editada com sucesso');
+        } else {
+            console.log('➕ Criando nova tarefa');
+            const result = await addTaskConfig({
+                type: category,
+                title,
+                points: category === 'checklist' ? null : points
+            });
+            console.log('✅ Tarefa criada:', result);
+        }
+        
+        hideTaskModal();
+        await loadTasks();
+    } catch (error) {
+        console.error('❌ Erro ao salvar tarefa:', error);
+        alert('Erro ao salvar tarefa. Veja o console para mais detalhes.');
     }
-    
-    hideTaskModal();
-    loadTasks();
 }
 
 /**

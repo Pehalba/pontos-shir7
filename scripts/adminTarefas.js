@@ -1,19 +1,15 @@
 /**
  * Gerenciamento de Tarefas - Admin
+ * Agora usa Firebase (dataStore.firebase) para salvar a configuração
+ * das tarefas de checklist/fáceis/intermediárias/difíceis.
  */
 
 import {
-    getChecklistTasks,
-    addChecklistTask,
-    updateChecklistTask,
-    removeChecklistTask,
-    saveChecklistTasks,
-    getTasksByCategory,
-    addTaskToCategory,
-    updateTaskInCategory,
-    removeTaskFromCategory,
-    saveTasksByCategory
-} from './dataStore.js';
+  addTaskConfig,
+  updateTaskConfig,
+  deleteTaskConfig,
+  getTasksConfigByType,
+} from './dataStore.firebase.js';
 
 let currentTab = 'checklist';
 let editingTask = null;
@@ -100,58 +96,56 @@ function setupEventListeners() {
 /**
  * Carrega e renderiza as tarefas
  */
-function loadTasks() {
-    if (currentTab === 'checklist') {
-        renderChecklistTasks();
-    } else {
-        renderCategoryTasks(currentTab);
-    }
+async function loadTasks() {
+  if (currentTab === 'checklist') {
+    await renderChecklistTasks();
+  } else {
+    await renderCategoryTasks(currentTab);
+  }
 }
 
-/**
- * Renderiza tarefas do checklist
- */
-function renderChecklistTasks() {
-    const container = document.getElementById('checklistList');
-    const tasks = getChecklistTasks();
-    
-    container.innerHTML = '';
-    
-    if (tasks.length === 0) {
-        container.innerHTML = '<div class="tasks-admin__empty">Nenhuma tarefa cadastrada. Clique em "Adicionar Tarefa" para começar.</div>';
-        return;
-    }
-    
-    // Ordena por ordem
-    const sortedTasks = [...tasks].sort((a, b) => (a.order || 0) - (b.order || 0));
-    
-    sortedTasks.forEach((task, index) => {
-        const item = createTaskItem('checklist', task, index, sortedTasks.length);
-        container.appendChild(item);
-    });
+// Renderiza tarefas do checklist a partir do Firebase
+async function renderChecklistTasks() {
+  const container = document.getElementById('checklistList');
+  container.innerHTML =
+    '<div class="tasks-admin__empty">Carregando tarefas...</div>';
+
+  const tasks = await getTasksConfigByType('checklist');
+
+  container.innerHTML = '';
+
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML =
+      '<div class="tasks-admin__empty">Nenhuma tarefa cadastrada. Clique em "Adicionar Tarefa" para começar.</div>';
+    return;
+  }
+
+  tasks.forEach((task, index) => {
+    const item = createTaskItem('checklist', task, index, tasks.length);
+    container.appendChild(item);
+  });
 }
 
-/**
- * Renderiza tarefas de uma categoria
- */
-function renderCategoryTasks(category) {
-    const container = document.getElementById(`${category}List`);
-    const tasks = getTasksByCategory(category);
-    
-    container.innerHTML = '';
-    
-    if (tasks.length === 0) {
-        container.innerHTML = '<div class="tasks-admin__empty">Nenhuma tarefa cadastrada. Clique em "Adicionar Tarefa" para começar.</div>';
-        return;
-    }
-    
-    // Ordena por ordem
-    const sortedTasks = [...tasks].sort((a, b) => (a.order || 0) - (b.order || 0));
-    
-    sortedTasks.forEach((task, index) => {
-        const item = createTaskItem(category, task, index, sortedTasks.length);
-        container.appendChild(item);
-    });
+// Renderiza tarefas de uma categoria (easy / intermediate / hard) do Firebase
+async function renderCategoryTasks(category) {
+  const container = document.getElementById(`${category}List`);
+  container.innerHTML =
+    '<div class="tasks-admin__empty">Carregando tarefas...</div>';
+
+  const tasks = await getTasksConfigByType(category);
+
+  container.innerHTML = '';
+
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML =
+      '<div class="tasks-admin__empty">Nenhuma tarefa cadastrada. Clique em "Adicionar Tarefa" para começar.</div>';
+    return;
+  }
+
+  tasks.forEach((task, index) => {
+    const item = createTaskItem(category, task, index, tasks.length);
+    container.appendChild(item);
+  });
 }
 
 /**
@@ -202,42 +196,36 @@ function createTaskItem(category, task, index, total) {
 /**
  * Move uma tarefa para cima ou para baixo
  */
-function moveTask(category, id, direction) {
-    let tasks;
-    
-    if (category === 'checklist') {
-        tasks = getChecklistTasks();
-    } else {
-        tasks = getTasksByCategory(category);
-    }
-    
-    const sortedTasks = [...tasks].sort((a, b) => (a.order || 0) - (b.order || 0));
-    const index = sortedTasks.findIndex(t => t.id === id);
-    
-    if (index === -1) return;
-    
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= sortedTasks.length) return;
-    
-    // Troca as ordens
-    const temp = sortedTasks[index].order || index;
-    sortedTasks[index].order = sortedTasks[newIndex].order || newIndex;
-    sortedTasks[newIndex].order = temp;
-    
-    // Salva
-    if (category === 'checklist') {
-        saveChecklistTasks(sortedTasks);
-    } else {
-        saveTasksByCategory(category, sortedTasks);
-    }
-    
-    loadTasks();
+async function moveTask(category, id, direction) {
+  const tasks = await getTasksConfigByType(category);
+  const sortedTasks = [...tasks].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
+  const index = sortedTasks.findIndex((t) => t.id === id);
+  if (index === -1) return;
+
+  const newIndex = direction === 'up' ? index - 1 : index + 1;
+  if (newIndex < 0 || newIndex >= sortedTasks.length) return;
+
+  const moved = sortedTasks.splice(index, 1)[0];
+  sortedTasks.splice(newIndex, 0, moved);
+
+  // Atualiza a ordem no Firebase
+  await Promise.all(
+    sortedTasks.map((t, i) =>
+      updateTaskConfig(t.id, {
+        order: i,
+      })
+    )
+  );
+
+  loadTasks();
 }
 
 /**
  * Mostra modal para adicionar/editar tarefa
  */
-function showTaskModal(category, taskId = null) {
+async function showTaskModal(category, taskId = null) {
     editingTask = taskId;
     const modal = document.getElementById('taskModal');
     const form = document.getElementById('taskForm');
@@ -255,15 +243,9 @@ function showTaskModal(category, taskId = null) {
     if (taskId) {
         modalTitle.textContent = 'Editar Tarefa';
         
-        // Carrega dados da tarefa
-        let task;
-        if (category === 'checklist') {
-            const tasks = getChecklistTasks();
-            task = tasks.find(t => t.id === taskId);
-        } else {
-            const tasks = getTasksByCategory(category);
-            task = tasks.find(t => t.id === taskId);
-        }
+        // Carrega dados da tarefa do Firebase
+        const tasks = await getTasksConfigByType(category);
+        const task = tasks.find(t => t.id === taskId);
         
         if (task) {
             titleInput.value = task.title;
@@ -302,7 +284,7 @@ function hideTaskModal() {
 /**
  * Manipula o salvamento da tarefa
  */
-function handleSaveTask(e) {
+async function handleSaveTask(e) {
     e.preventDefault();
     
     const category = document.getElementById('taskCategory').value;
@@ -315,18 +297,17 @@ function handleSaveTask(e) {
         return;
     }
     
-    if (category === 'checklist') {
-        if (taskId) {
-            updateChecklistTask(taskId, { title });
-        } else {
-            addChecklistTask({ title });
-        }
+    if (taskId) {
+        const updates = category === 'checklist'
+            ? { title }
+            : { title, points };
+        await updateTaskConfig(taskId, updates);
     } else {
-        if (taskId) {
-            updateTaskInCategory(category, taskId, { title, points });
-        } else {
-            addTaskToCategory(category, { title, points });
-        }
+        await addTaskConfig({
+            type: category,
+            title,
+            points: category === 'checklist' ? null : points
+        });
     }
     
     hideTaskModal();
@@ -343,17 +324,12 @@ function editTask(category, id) {
 /**
  * Exclui uma tarefa
  */
-function deleteTask(category, id) {
+async function deleteTask(category, id) {
     if (!confirm('Tem certeza que deseja excluir esta tarefa?')) {
         return;
     }
     
-    if (category === 'checklist') {
-        removeChecklistTask(id);
-    } else {
-        removeTaskFromCategory(category, id);
-    }
-    
+    await deleteTaskConfig(id);
     loadTasks();
 }
 

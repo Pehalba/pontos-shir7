@@ -1,4 +1,4 @@
-// DataStore usando Firebase para COLABORADORES (primeira etapa de migração)
+// DataStore usando Firebase para COLABORADORES / PONTOS / RESGATES / AJUSTES / TAREFAS
 
 import { firebaseConfig } from './firebaseConfig.js';
 import {
@@ -207,6 +207,51 @@ export async function countMonthlyRedemptions(collaboratorId) {
 
   const reds = await getRedemptionsByCollaborator(collaboratorId);
   return reds.filter(r => r.month === monthStr).length;
+}
+
+// ===================== CONFIGURAÇÃO DE TAREFAS (CHECKLIST / FÁCEIS / ETC) =====================
+
+const TASKS_COLLECTION = 'tasks';
+
+// Busca tarefas de um tipo (checklist / easy / intermediate / hard)
+export async function getTasksConfigByType(type) {
+  const q = query(
+    collection(db, TASKS_COLLECTION),
+    where('type', '==', type),
+    where('deleted', '==', false)
+  );
+  const snap = await getDocs(q);
+  return snap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+}
+
+// Cria nova tarefa de configuração
+export async function addTaskConfig(task) {
+  const { type, title, points, order } = task;
+  const data = {
+    type,
+    title,
+    points: typeof points === 'number' ? points : null,
+    order: typeof order === 'number' ? order : 0,
+    deleted: false,
+    createdAt: new Date().toISOString(),
+  };
+
+  const ref = await addDoc(collection(db, TASKS_COLLECTION), data);
+  return { id: ref.id, ...data };
+}
+
+// Atualiza campos de uma tarefa de configuração
+export async function updateTaskConfig(id, updates) {
+  const ref = doc(db, TASKS_COLLECTION, id);
+  await updateDoc(ref, updates);
+}
+
+// Marca tarefa como removida (soft delete)
+export async function deleteTaskConfig(id) {
+  const ref = doc(db, TASKS_COLLECTION, id);
+  await updateDoc(ref, { deleted: true });
 }
 
 

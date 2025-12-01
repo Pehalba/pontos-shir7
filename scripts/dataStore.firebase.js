@@ -217,12 +217,12 @@ const TASKS_COLLECTION = 'tasks';
 export async function getTasksConfigByType(type) {
   const q = query(
     collection(db, TASKS_COLLECTION),
-    where('type', '==', type),
-    where('deleted', '==', false)
+    where('type', '==', type)
   );
   const snap = await getDocs(q);
   return snap.docs
     .map((d) => ({ id: d.id, ...d.data() }))
+    .filter(t => !t.deleted) // Filtra deletados no código
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 

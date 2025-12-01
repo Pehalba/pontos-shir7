@@ -4,12 +4,16 @@
  * das tarefas de checklist/fáceis/intermediárias/difíceis.
  */
 
+console.log('📄 Script adminTarefas.js carregado!');
+
 import {
   addTaskConfig,
   updateTaskConfig,
   deleteTaskConfig,
   getTasksConfigByType,
 } from './dataStore.firebase.js';
+
+console.log('✅ Imports carregados:', { addTaskConfig, updateTaskConfig, deleteTaskConfig, getTasksConfigByType });
 
 let currentTab = 'checklist';
 let editingTask = null;

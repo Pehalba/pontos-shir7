@@ -215,30 +215,43 @@ const TASKS_COLLECTION = 'tasks';
 
 // Busca tarefas de um tipo (checklist / easy / intermediate / hard)
 export async function getTasksConfigByType(type) {
-  const q = query(
-    collection(db, TASKS_COLLECTION),
-    where('type', '==', type)
-  );
-  const snap = await getDocs(q);
-  return snap.docs
-    .map((d) => ({ id: d.id, ...d.data() }))
-    .filter(t => !t.deleted) // Filtra deletados no código
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  try {
+    const q = query(
+      collection(db, TASKS_COLLECTION),
+      where('type', '==', type)
+    );
+    const snap = await getDocs(q);
+    const tasks = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .filter(t => !t.deleted) // Filtra deletados no código
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+    console.log(`📋 Tarefas carregadas do Firebase (${type}):`, tasks.length);
+    return tasks;
+  } catch (error) {
+    console.error('❌ Erro ao buscar tarefas do Firebase:', error);
+    return [];
+  }
 }
 
 // Cria nova tarefa de configuração
 export async function addTaskConfig(task) {
-  const { type, title, points, order } = task;
+  const { type, title, points } = task;
+  
+  // Busca tarefas existentes para calcular a ordem
+  const existing = await getTasksConfigByType(type);
+  const order = existing.length;
+  
   const data = {
     type,
     title,
     points: typeof points === 'number' ? points : null,
-    order: typeof order === 'number' ? order : 0,
+    order: order,
     deleted: false,
     createdAt: new Date().toISOString(),
   };
 
   const ref = await addDoc(collection(db, TASKS_COLLECTION), data);
+  console.log('✅ Tarefa salva no Firebase:', { id: ref.id, ...data });
   return { id: ref.id, ...data };
 }
 

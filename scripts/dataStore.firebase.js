@@ -1,5 +1,7 @@
 // DataStore usando Firebase para COLABORADORES / PONTOS / RESGATES / AJUSTES / TAREFAS
 
+console.log('🔥 dataStore.firebase.js carregado!');
+
 import { firebaseConfig } from './firebaseConfig.js';
 import {
   initializeApp

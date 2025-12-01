@@ -29,10 +29,13 @@ import {
     addActivity,
     getActivitiesByCollaborator,
     calculateCollaboratorBalance,
-    calculateMonthPoints as calculateMonthPointsDataStore,
+    calculateMonthPoints as calculateMonthPointsDataStore
+} from './dataStore.firebase.js';
+
+import {
     getChecklistTasks,
     getTasksByCategory
-} from './dataStore.firebase.js';
+} from './dataStore.js';
 
 import { requireAuth, getCurrentUser } from './auth.js';
 

@@ -33,9 +33,8 @@ import {
 } from './dataStore.firebase.js';
 
 import {
-    getChecklistTasks,
-    getTasksByCategory
-} from './dataStore.js';
+    getTasksConfigByType
+} from './dataStore.firebase.js';
 
 import { requireAuth, getCurrentUser } from './auth.js';
 
@@ -55,53 +54,86 @@ let INTERMEDIATE_TASKS = [];
 let HARD_TASKS = [];
 
 /**
- * Carrega tarefas do dataStore
+ * Carrega tarefas do Firebase
  */
-function loadTasksFromStore() {
-    CHECKLIST_TASKS = getChecklistTasks();
-    EASY_TASKS = getTasksByCategory('easy');
-    INTERMEDIATE_TASKS = getTasksByCategory('intermediate');
-    HARD_TASKS = getTasksByCategory('hard');
-    
-    // Se não há tarefas cadastradas, usa valores padrão
-    if (CHECKLIST_TASKS.length === 0) {
+async function loadTasksFromStore() {
+    try {
+        const [checklist, easy, intermediate, hard] = await Promise.all([
+            getTasksConfigByType('checklist'),
+            getTasksConfigByType('easy'),
+            getTasksConfigByType('intermediate'),
+            getTasksConfigByType('hard')
+        ]);
+        
+        CHECKLIST_TASKS = checklist || [];
+        EASY_TASKS = easy || [];
+        INTERMEDIATE_TASKS = intermediate || [];
+        HARD_TASKS = hard || [];
+        
+        // Se não há tarefas cadastradas, usa valores padrão
+        if (CHECKLIST_TASKS.length === 0) {
+            CHECKLIST_TASKS = [
+                { id: 'checklist-1', title: 'Revisar e-mails recebidos', order: 0 },
+                { id: 'checklist-2', title: 'Atualizar planilha de atividades', order: 1 },
+                { id: 'checklist-3', title: 'Participar da reunião diária', order: 2 },
+                { id: 'checklist-4', title: 'Enviar relatório de progresso', order: 3 }
+            ];
+        }
+        
+        if (EASY_TASKS.length === 0) {
+            EASY_TASKS = [
+                { id: 'easy-1', title: 'Organizar arquivos da pasta compartilhada', points: 1, order: 0 },
+                { id: 'easy-2', title: 'Responder mensagens pendentes no chat', points: 1, order: 1 },
+                { id: 'easy-3', title: 'Atualizar perfil no sistema', points: 1, order: 2 }
+            ];
+        }
+        
+        if (INTERMEDIATE_TASKS.length === 0) {
+            INTERMEDIATE_TASKS = [
+                { id: 'intermediate-1', title: 'Criar relatório semanal de atividades', points: 2, order: 0 },
+                { id: 'intermediate-2', title: 'Revisar e atualizar documentação do projeto', points: 2, order: 1 },
+                { id: 'intermediate-3', title: 'Participar de treinamento interno', points: 2, order: 2 }
+            ];
+        }
+        
+        if (HARD_TASKS.length === 0) {
+            HARD_TASKS = [
+                { id: 'hard-1', title: 'Desenvolver nova funcionalidade do sistema', points: 3, order: 0 },
+                { id: 'hard-2', title: 'Resolver problema crítico reportado', points: 3, order: 1 },
+                { id: 'hard-3', title: 'Apresentar proposta de melhoria para equipe', points: 3, order: 2 }
+            ];
+        }
+        
+        // Ordena todas as tarefas
+        CHECKLIST_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
+        EASY_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
+        INTERMEDIATE_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
+        HARD_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
+    } catch (error) {
+        console.error('Erro ao carregar tarefas do Firebase:', error);
+        // Em caso de erro, usa valores padrão
         CHECKLIST_TASKS = [
             { id: 'checklist-1', title: 'Revisar e-mails recebidos', order: 0 },
             { id: 'checklist-2', title: 'Atualizar planilha de atividades', order: 1 },
             { id: 'checklist-3', title: 'Participar da reunião diária', order: 2 },
             { id: 'checklist-4', title: 'Enviar relatório de progresso', order: 3 }
         ];
-    }
-    
-    if (EASY_TASKS.length === 0) {
         EASY_TASKS = [
             { id: 'easy-1', title: 'Organizar arquivos da pasta compartilhada', points: 1, order: 0 },
             { id: 'easy-2', title: 'Responder mensagens pendentes no chat', points: 1, order: 1 },
             { id: 'easy-3', title: 'Atualizar perfil no sistema', points: 1, order: 2 }
         ];
-    }
-    
-    if (INTERMEDIATE_TASKS.length === 0) {
         INTERMEDIATE_TASKS = [
             { id: 'intermediate-1', title: 'Criar relatório semanal de atividades', points: 2, order: 0 },
             { id: 'intermediate-2', title: 'Revisar e atualizar documentação do projeto', points: 2, order: 1 },
             { id: 'intermediate-3', title: 'Participar de treinamento interno', points: 2, order: 2 }
         ];
-    }
-    
-    if (HARD_TASKS.length === 0) {
         HARD_TASKS = [
             { id: 'hard-1', title: 'Desenvolver nova funcionalidade do sistema', points: 3, order: 0 },
             { id: 'hard-2', title: 'Resolver problema crítico reportado', points: 3, order: 1 },
             { id: 'hard-3', title: 'Apresentar proposta de melhoria para equipe', points: 3, order: 2 }
         ];
     }
-    
-    // Ordena todas as tarefas
-    CHECKLIST_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
-    EASY_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
-    INTERMEDIATE_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
-    HARD_TASKS.sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 
 // Estado da aplicação
@@ -129,13 +161,13 @@ async function init() {
         }
     }
     
-    // Carrega tarefas do dataStore
-    loadTasksFromStore();
+    // Carrega tarefas do Firebase
+    await loadTasksFromStore();
     
     checkDailyReset();
     loadPersonalBoardsData();
     renderChecklist();
-    renderTaskColumns();
+    await renderTaskColumns();
     renderPersonalBoards();
     updatePointsDisplay();
     
@@ -413,9 +445,9 @@ function getOrderedTasks(originalTasks, category) {
 /**
  * Renderiza as colunas de tarefas extras
  */
-function renderTaskColumns() {
-    // Recarrega tarefas do dataStore (caso tenham sido atualizadas)
-    loadTasksFromStore();
+async function renderTaskColumns() {
+    // Recarrega tarefas do Firebase (caso tenham sido atualizadas)
+    await loadTasksFromStore();
     
     renderTaskColumn('easyColumn', EASY_TASKS, 'easy');
     renderTaskColumn('intermediateColumn', INTERMEDIATE_TASKS, 'intermediate');
@@ -464,7 +496,7 @@ function moveTask(type, currentIndex, direction, originalTasks) {
     const order = orderedTasks.map(t => t.id);
     saveTaskOrder(type, order);
     
-    renderTaskColumns();
+    await renderTaskColumns();
 }
 
 /**
@@ -495,12 +527,12 @@ function handleTaskToggle(taskId, type, points, isCompleting) {
             });
             
             updatePointsDisplay();
-            renderTaskColumns(); // Atualiza visual
+            await renderTaskColumns(); // Atualiza visual
         }
     } else {
         removeCompletedTask(taskId, today);
         updatePointsDisplay();
-        renderTaskColumns(); // Atualiza visual
+        await renderTaskColumns(); // Atualiza visual
     }
 }
 
